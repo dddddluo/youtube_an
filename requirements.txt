@@ -1,0 +1,25 @@
+# YouTube 视频下载和处理
+yt-dlp>=2024.10.0
+
+# 音频转录
+openai-whisper>=20231117
+torch>=2.0.0
+torchaudio>=2.0.0
+
+# AI 分析 (可选,支持多种后端)
+openai>=1.0.0  # OpenAI GPT API
+anthropic>=0.21.0  # Claude API (备选)
+
+# 数据处理
+pyyaml>=6.0
+requests>=2.31.0
+tqdm>=4.66.0
+
+# 文本处理
+jieba>=0.42.1  # 中文分词
+wordcloud>=1.9.0  # 词云生成
+
+# 工具库
+python-dotenv>=1.0.0
+colorama>=0.4.6  # 彩色终端输出
+

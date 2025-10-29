@@ -1,0 +1,53 @@
+# YouTube 视频分析系统配置文件
+
+# API 配置 (请填入你的 API 密钥)
+api:
+  # OpenAI API 配置
+  openai:
+    api_key: ""  # 在此填入你的 OpenAI API 密钥,或使用环境变量 OPENAI_API_KEY
+    model: "gpt-3.5-turbo"  # 使用的模型: gpt-3.5-turbo (便宜) 或 gpt-4 (更好但贵)
+    
+  # Claude API 配置 (备选)
+  anthropic:
+    api_key: ""  # 在此填入你的 Anthropic API 密钥,或使用环境变量 ANTHROPIC_API_KEY
+    model: "claude-3-haiku-20240307"  # 使用的模型
+
+# Whisper 配置
+whisper:
+  model: "base"  # 模型大小: tiny, base, small, medium, large
+  # tiny: 最快但准确度低
+  # base: 速度快,准确度中等 (推荐)
+  # small: 速度中等,准确度好
+  # medium/large: 速度慢,准确度最高
+  language: "zh"  # 默认语言: zh(中文), en(英文), auto(自动检测)
+  device: "cpu"  # 使用设备: cpu 或 cuda (如果有 GPU)
+
+# yt-dlp 配置
+youtube:
+  max_videos: 50  # 最多分析的视频数量 (0 表示不限制)
+  subtitle_languages: ["zh-Hans", "zh-Hant", "zh", "en"]  # 优先下载的字幕语言
+  download_audio_format: "mp3"  # 音频格式
+  audio_quality: "128K"  # 音频质量
+
+# 内容分析配置
+analysis:
+  use_ai: false # 是否使用 AI 进行分析 (false 则使用简单的关键词分析)
+  ai_provider: "openai"  # AI 提供商: openai 或 anthropic
+  batch_size: 5  # 批量分析的视频数量
+  min_subtitle_length: 50  # 最少字幕字符数 (太短的视频可能不分析)
+
+# 知识库生成配置
+knowledge_base:
+  generate_wordcloud: true  # 是否生成词云
+  wordcloud_max_words: 100  # 词云最大词数
+  include_video_details: true  # 是否包含每个视频的详细分析
+  top_keywords: 20  # 提取的关键词数量
+
+# 系统配置
+system:
+  cache_enabled: true  # 是否启用缓存
+  log_level: "INFO"  # 日志级别: DEBUG, INFO, WARNING, ERROR
+  max_workers: 3  # 并发处理的最大线程数
+  retry_times: 3  # 失败重试次数
+  retry_delay: 5  # 重试延迟(秒)
+
