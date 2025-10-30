@@ -182,6 +182,57 @@ system:
   max_workers: 1
 ```
 
+### 问题: Whisper 模型校验和错误
+
+```
+ERROR: Model has been downloaded but the SHA256 checksum does not not match
+```
+
+### 解决方案
+
+这是因为模型文件下载不完整或损坏。
+
+**方案 1: 自动修复(推荐)**
+
+系统会自动尝试重新下载。如果自动修复失败,使用方案 2。
+
+**方案 2: 手动删除并重新下载**
+
+```bash
+# 删除损坏的模型文件
+rm -rf ~/.cache/whisper/base.pt
+
+# 或者删除所有 Whisper 模型
+rm -rf ~/.cache/whisper/*.pt
+
+# 重新运行程序,会自动下载
+python main.py -c "频道URL"
+```
+
+**方案 3: 使用更小的模型**
+
+如果 base 模型一直下载失败,尝试更小的 tiny 模型:
+
+```yaml
+# config.yaml
+whisper:
+  model: "tiny"  # 更小,下载更快
+```
+
+**方案 4: 检查磁盘空间**
+
+确保有足够的磁盘空间:
+- tiny: ~75 MB
+- base: ~145 MB
+- small: ~466 MB
+- medium: ~1.5 GB
+- large: ~3 GB
+
+```bash
+# 检查可用空间
+df -h ~
+```
+
 ### 问题: Whisper 模型下载失败
 
 ```
@@ -190,13 +241,19 @@ ERROR: Failed to download model
 
 ### 解决方案
 
-1. **手动下载模型**:
-访问 https://github.com/openai/whisper 查看模型下载链接
+1. **检查网络连接**:
+```bash
+# 测试连接
+curl -I https://openaipublic.azureedge.net/main/whisper/models/
+```
 
-2. **使用镜像**:
-如果在中国大陆,可能需要使用镜像或 VPN
+2. **使用镜像或 VPN**:
+如果在中国大陆,可能需要使用 VPN
 
-3. **使用更小的模型**:
+3. **手动下载模型**:
+访问 https://github.com/openai/whisper 查看模型下载链接,手动下载后放到 `~/.cache/whisper/`
+
+4. **使用更小的模型**:
 ```yaml
 whisper:
   model: "tiny"  # 最小,下载最快

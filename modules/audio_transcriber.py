@@ -49,11 +49,42 @@ class AudioTranscriber:
         self.logger.info(f"正在加载 Whisper 模型: {self.model_name}")
         
         try:
+            # 尝试加载模型
             self.model = whisper.load_model(self.model_name, device=self.device)
             self.logger.info(f"Whisper 模型加载成功 (设备: {self.device})")
         except Exception as e:
-            self.logger.error(f"加载 Whisper 模型失败: {str(e)}")
-            raise
+            error_msg = str(e)
+            self.logger.error(f"加载 Whisper 模型失败: {error_msg}")
+            
+            # 如果是 SHA256 校验和错误,尝试重新下载
+            if "SHA256" in error_msg or "checksum" in error_msg.lower():
+                self.logger.warning("检测到模型文件损坏,正在尝试重新下载...")
+                try:
+                    # 删除损坏的模型文件
+                    import os
+                    from pathlib import Path
+                    
+                    # Whisper 模型默认保存在 ~/.cache/whisper/
+                    cache_dir = Path.home() / ".cache" / "whisper"
+                    model_file = cache_dir / f"{self.model_name}.pt"
+                    
+                    if model_file.exists():
+                        self.logger.info(f"删除损坏的模型文件: {model_file}")
+                        model_file.unlink()
+                    
+                    # 重新下载模型
+                    self.logger.info("重新下载 Whisper 模型...")
+                    self.model = whisper.load_model(self.model_name, device=self.device, download_root=str(cache_dir))
+                    self.logger.info("Whisper 模型重新下载并加载成功!")
+                    
+                except Exception as retry_error:
+                    self.logger.error(f"重新下载模型失败: {str(retry_error)}")
+                    self.logger.error("请手动删除损坏的模型文件:")
+                    self.logger.error(f"  rm -rf ~/.cache/whisper/{self.model_name}.pt")
+                    self.logger.error("然后重新运行程序")
+                    raise
+            else:
+                raise
     
     def transcribe(self, audio_file: str, language: Optional[str] = None) -> Dict:
         """

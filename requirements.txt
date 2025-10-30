@@ -5,6 +5,7 @@ yt-dlp>=2024.10.0
 openai-whisper>=20231117
 torch>=2.0.0
 torchaudio>=2.0.0
+numpy<2.0.0  # Whisper 需要 NumPy 1.x
 
 # AI 分析 (可选,支持多种后端)
 openai>=1.0.0  # OpenAI GPT API
