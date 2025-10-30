@@ -185,6 +185,8 @@ youtube_an/
 
 ## ❓ 常见问题
 
+> 💡 **遇到问题?** 查看详细的 [故障排除指南](TROUBLESHOOTING.md)
+
 ### Q: 需要付费吗?
 
 A: 
@@ -221,13 +223,29 @@ A:
 - 可在 `config.yaml` 中设置 `whisper.language`
 - 设置为 `auto` 可自动检测语言
 
-### Q: 遇到错误怎么办?
+### Q: 遇到 HTTP 403 错误怎么办?
+
+A: HTTP 403 是最常见的问题,通常是因为 YouTube 的反爬虫机制。
+
+**快速解决**:
+```bash
+# 1. 更新 yt-dlp 到最新版(最重要!)
+pip install --upgrade yt-dlp
+
+# 2. 重新运行
+python main.py -c "频道URL"
+```
+
+更多解决方案请查看 [故障排除指南](TROUBLESHOOTING.md#http-403-错误)
+
+### Q: 遇到其他错误怎么办?
 
 A:
 1. 查看日志文件: `logs/youtube_analyzer.log`
 2. 使用 `--log-level DEBUG` 获取详细日志
-3. 检查网络连接和 API 密钥配置
-4. 确保 Python 版本 >= 3.8
+3. 查看 [故障排除指南](TROUBLESHOOTING.md)
+4. 运行 `python test_setup.py` 检查环境
+5. 确保 Python 版本 >= 3.8
 
 ## 📝 配置文件详解
 

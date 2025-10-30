@@ -127,6 +127,10 @@ class YouTubeFetcher:
             'writeautomaticsub': True,
             'subtitleslangs': self.subtitle_languages,
             'skip_download': True,
+            # 防止403错误的配置
+            'nocheckcertificate': True,
+            'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'referer': 'https://www.youtube.com/',
         }
         
         try:
@@ -181,7 +185,7 @@ class YouTubeFetcher:
         subtitle_dir = self.raw_dir / "subtitles"
         subtitle_dir.mkdir(exist_ok=True)
         
-        # 配置 yt-dlp 选项
+        # 配置 yt-dlp 选项(增强防403配置)
         ydl_opts = {
             'quiet': True,
             'no_warnings': True,
@@ -191,6 +195,10 @@ class YouTubeFetcher:
             'subtitlesformat': 'vtt',  # 字幕格式
             'skip_download': True,  # 不下载视频
             'outtmpl': str(subtitle_dir / f"{video_id}.%(ext)s"),  # 输出模板
+            # 防止403错误的配置
+            'nocheckcertificate': True,
+            'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'referer': 'https://www.youtube.com/',
         }
         
         try:
@@ -235,7 +243,7 @@ class YouTubeFetcher:
             self.logger.info(f"音频文件已存在: {audio_path}")
             return str(audio_path)
         
-        # 配置 yt-dlp 选项
+        # 配置 yt-dlp 选项(增强防403配置)
         ydl_opts = {
             'format': 'bestaudio/best',  # 最佳音频质量
             'postprocessors': [{
@@ -246,6 +254,13 @@ class YouTubeFetcher:
             'outtmpl': str(audio_dir / f"{video_id}.%(ext)s"),  # 输出模板
             'quiet': True,
             'no_warnings': True,
+            # 防止403错误的配置
+            'nocheckcertificate': True,
+            'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'referer': 'https://www.youtube.com/',
+            'extractor_retries': 3,
+            'fragment_retries': 3,
+            'retry_sleep': 5,
         }
         
         try:
@@ -261,6 +276,7 @@ class YouTubeFetcher:
                 
         except Exception as e:
             self.logger.error(f"下载音频失败: {str(e)}")
+            self.logger.warning(f"视频 {video_id} 无法下载音频,将跳过此视频")
             return None
     
     def parse_vtt_subtitles(self, vtt_file: str) -> str:
